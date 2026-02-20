@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/Izumu.Frontend/">
+    <Project Path="Izumu.Frontend/Izumu.FrontEnd.csproj" />
+  </Folder>
+  <Project Path="Izumu.Api/Izumu.Api.csproj" />
+</Solution>

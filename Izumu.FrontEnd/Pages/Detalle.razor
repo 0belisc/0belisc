@@ -1,0 +1,88 @@
+@page "/detalle"
+@page "/detalle/{Id:int}"
+@using Izumu.Shared.Models
+@using Izumu.FrontEnd.Services;
+@inject ClienteApiService Api
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<h3>@(Id == 0 ? "Adicionar Cliente" : "Editar Cliente")</h3>
+
+<EditForm Model="cliente" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label>Tipo Documento</label>
+            <InputSelect @bind-Value="cliente.TipoDocumentoId" class="form-control">
+                <option value="0">-- Seleccione --</option>
+                <option value="1">Cédula de Ciudadanía</option>
+                <option value="2">Pasaporte</option>
+                <option value="3">Cédula de Extranjería</option>
+            </InputSelect>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <label>Número Documento</label>
+            <InputText @bind-Value="cliente.NumeroDocumento" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label>Primer Nombre</label>
+            <InputText @bind-Value="cliente.PrimerNombre" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label>Primer Apellido</label>
+            <InputText @bind-Value="cliente.PrimerApellido" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label>Fecha de Nacimiento</label>
+            @* El tipo date habilita el calendario automáticamente *@
+            <InputDate @bind-Value="cliente.FechaNacimiento" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label>Email</label>
+            <InputText @bind-Value="cliente.Email" class="form-control" placeholder="ejemplo@correo.com" />
+            <ValidationMessage For="@(() => cliente.Email)" />
+        </div>
+
+        <div class="col-md-12 mb-3">
+            <label>Plan de Preferencia</label>
+            <InputSelect @bind-Value="cliente.PlanId" class="form-control">
+                <option value="0">-- Seleccione un Plan --</option>
+                <option value="1">Plan Básico</option>
+                <option value="2">Plan Premium</option>
+            </InputSelect>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+</EditForm>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Cliente cliente = new() { FechaNacimiento = DateTime.Now };
+
+    protected override async Task OnInitializedAsync() {
+        if (Id != 0) {
+            // Lógica para cargar cliente si es edición (opcional)
+        }
+    }
+
+    private async Task Guardar() {
+        var response = await Api.Guardar(cliente);
+        if (response.IsSuccessStatusCode) {
+            await JS.InvokeVoidAsync("alert", "Cliente procesado con éxito");
+            Nav.NavigateTo("/");
+        } else {
+            var error = await response.Content.ReadAsStringAsync();
+            await JS.InvokeVoidAsync("alert", $"Error: {error}");
+        }
+    }
+
+    private void Cancelar() => Nav.NavigateTo("/");
+}

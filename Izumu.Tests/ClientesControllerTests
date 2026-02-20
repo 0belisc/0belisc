@@ -1,0 +1,75 @@
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using Izumu.Api.Controllers;
+using Izumu.Api.Services;
+using Izumu.Shared.Models;
+using Xunit;
+
+namespace Izumu.Tests;
+
+public class ClientesControllerTests
+{
+    private readonly Mock<IClienteService> _mockService;
+    private readonly ClientesController _controller;
+
+    public ClientesControllerTests()
+    {
+        _mockService = new Mock<IClienteService>();
+        
+        _controller = new ClientesController(_mockService.Object);
+    }
+
+    [Fact]
+    public async Task Post_ReturnsBadRequest_WhenServiceFailsToCreate()
+    {
+        // ARRANGE (Preparar)
+        var clienteDuplicado = new Cliente { 
+            TipoDocumentoId = 1, 
+            NumeroDocumento = "12345", 
+            PrimerNombre = "Juan" 
+        };
+
+        _mockService.Setup(s => s.Create(It.IsAny<Cliente>()))
+                    .ReturnsAsync(false);
+
+        var resultado = await _controller.Post(clienteDuplicado);
+
+        // Verificamos que el resultado sea del tipo BadRequestObjectResult (Error 400)
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(resultado);
+        
+        // Opcional: Verificar que el código de estado sea exactamente 400
+        Assert.Equal(400, badRequestResult.StatusCode);
+    }
+
+    [Fact]
+    public async Task Put_ReturnsNoContent_WhenUpdateIsSuccessful()
+    {
+        var clienteExistente = new Cliente { Id = 1, PrimerNombre = "Actualizado" };
+        _mockService.Setup(s => s.Update(1, It.IsAny<Cliente>())).ReturnsAsync(true);
+
+        var resultado = await _controller.Put(1, clienteExistente);
+
+        Assert.IsType<NoContentResult>(resultado);
+    }
+
+    [Fact]
+    public async Task Put_ReturnsNotFound_WhenClienteDoesNotExist()
+    {
+        var cliente = new Cliente { Id = 99 };
+        _mockService.Setup(s => s.Update(99, It.IsAny<Cliente>())).ReturnsAsync(false);
+
+        var resultado = await _controller.Put(99, cliente);
+
+        Assert.IsType<NotFoundResult>(resultado);
+    }
+
+    [Fact]
+    public async Task Delete_ReturnsNoContent_WhenDeleteIsSuccessful()
+    {
+        _mockService.Setup(s => s.Delete(1)).ReturnsAsync(true);
+
+        var resultado = await _controller.Delete(1);
+
+        Assert.IsType<NoContentResult>(resultado);
+    }
+}

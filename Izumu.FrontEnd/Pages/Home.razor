@@ -1,0 +1,103 @@
+﻿@page "/"
+@using Izumu.Shared.Models
+@using Izumu.FrontEnd.Services
+@inject ClienteApiService ApiService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>IZUMU Clientes - Inicio</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Listado de Clientes</h1>
+    <button class="btn btn-primary" @onclick="IrAAgregar">
+        <i class="bi bi-plus-circle"></i> Adicionar Cliente
+    </button>
+</div>
+
+@if (clientes == null)
+{
+    <div class="text-center">
+        <div class="spinner-border" role="status"></div>
+        <p>Cargando información de clientes...</p>
+    </div>
+}
+else if (!clientes.Any())
+{
+    <div class="alert alert-info">No se encontraron clientes registrados.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Documento</th>
+                    <th>Nombre Completo</th>
+                    <th>Email</th>
+                    <th>Fecha Nacimiento</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cliente in clientes)
+                {
+                    <tr>
+                        <td>@cliente.NumeroDocumento</td>
+                        <td>@($"{cliente.PrimerNombre} {cliente.PrimerApellido}")</td>
+                        <td>@cliente.Email</td>
+                        @* Criterio Funcional: Formato dd-MM-yyyy *@
+                        <td>@cliente.FechaNacimiento.ToString("dd-MM-yyyy")</td>
+                        <td class="text-center">
+                            <button class="btn btn-warning btn-sm me-2" @onclick="() => IrAEditar(cliente.Id)">
+                                Modificar
+                            </button>
+                            <button class="btn btn-danger btn-sm" @onclick="() => ConfirmarEliminar(cliente)">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private List<Cliente>? clientes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarClientes();
+    }
+
+    private async Task CargarClientes()
+    {
+        clientes = await ApiService.Listar();
+    }
+
+    private void IrAAgregar() => Navigation.NavigateTo("/detalle");
+
+    private void IrAEditar(int id) => Navigation.NavigateTo($"/detalle/{id}");
+
+    private async Task ConfirmarEliminar(Cliente cliente)
+    {
+        // Criterio Funcional: Pedir confirmación al usuario
+        var mensaje = $"¿Está seguro de eliminar al cliente {cliente.PrimerNombre} {cliente.PrimerApellido}?";
+        var confirmado = await JS.InvokeAsync<bool>("confirm", mensaje);
+
+        if (confirmado)
+        {
+            var response = await ApiService.Eliminar(cliente.Id);
+            if (response.IsSuccessStatusCode)
+            {
+                // Criterio Funcional: Mensaje informativo de ejecución exitosa
+                await JS.InvokeVoidAsync("alert", "Cliente eliminado correctamente.");
+                await CargarClientes(); // Recargar lista
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "Hubo un error al intentar eliminar el cliente.");
+            }
+        }
+    }
+}

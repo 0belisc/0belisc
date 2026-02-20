@@ -1,0 +1,11 @@
+C:\Users\ingpa\OneDrive\Documents\prueba\IZUMU_Clientes\Izumu.Shared\bin\Debug\net10.0\Izumu.Shared.deps.json
+C:\Users\ingpa\OneDrive\Documents\prueba\IZUMU_Clientes\Izumu.Shared\bin\Debug\net10.0\Izumu.Shared.dll
+C:\Users\ingpa\OneDrive\Documents\prueba\IZUMU_Clientes\Izumu.Shared\bin\Debug\net10.0\Izumu.Shared.pdb
+C:\Users\ingpa\OneDrive\Documents\prueba\IZUMU_Clientes\Izumu.Shared\obj\Debug\net10.0\Izumu.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ingpa\OneDrive\Documents\prueba\IZUMU_Clientes\Izumu.Shared\obj\Debug\net10.0\Izumu.Shared.AssemblyInfoInputs.cache
+C:\Users\ingpa\OneDrive\Documents\prueba\IZUMU_Clientes\Izumu.Shared\obj\Debug\net10.0\Izumu.Shared.AssemblyInfo.cs
+C:\Users\ingpa\OneDrive\Documents\prueba\IZUMU_Clientes\Izumu.Shared\obj\Debug\net10.0\Izumu.Shared.csproj.CoreCompileInputs.cache
+C:\Users\ingpa\OneDrive\Documents\prueba\IZUMU_Clientes\Izumu.Shared\obj\Debug\net10.0\Izumu.Shared.dll
+C:\Users\ingpa\OneDrive\Documents\prueba\IZUMU_Clientes\Izumu.Shared\obj\Debug\net10.0\refint\Izumu.Shared.dll
+C:\Users\ingpa\OneDrive\Documents\prueba\IZUMU_Clientes\Izumu.Shared\obj\Debug\net10.0\Izumu.Shared.pdb
+C:\Users\ingpa\OneDrive\Documents\prueba\IZUMU_Clientes\Izumu.Shared\obj\Debug\net10.0\ref\Izumu.Shared.dll
