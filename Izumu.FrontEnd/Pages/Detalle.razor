@@ -24,6 +24,7 @@
         
         <div class="col-md-6 mb-3">
             <label>Número Documento</label>
+            @{cliente.ToString();}
             <InputText @bind-Value="cliente.NumeroDocumento" class="form-control" />
         </div>
 
@@ -67,9 +68,22 @@
     [Parameter] public int Id { get; set; }
     private Cliente cliente = new() { FechaNacimiento = DateTime.Now };
 
+
     protected override async Task OnInitializedAsync() {
-        if (Id != 0) {
-            // Lógica para cargar cliente si es edición (opcional)
+
+        // 2. Lógica de Carga para Edición
+        if (Id != 0)
+        {
+            var clienteEncontrado = await Api.ObtenerPorIdAsync(Id);
+            if (clienteEncontrado != null)
+            {
+                cliente = clienteEncontrado;
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "Cliente no encontrado.");
+                Nav.NavigateTo("/");
+            }
         }
     }
 
